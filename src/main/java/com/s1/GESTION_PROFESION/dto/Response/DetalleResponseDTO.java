@@ -1,3 +1,17 @@
 package com.s1.GESTION_PROFESION.dto.Response;
 
-public record DetalleResponseDTO(Long id, String productoNombre, Integer cantidad, Double subtotal) {}
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record DetalleResponseDTO(
+        @Schema(example = "10")
+        Long id,
+
+        @Schema(example = "Teclado Mecánico RGB")
+        String productoNombre,
+
+        @Schema(example = "2")
+        Integer cantidad,
+
+        @Schema(example = "171.98")
+        Double subtotal
+) {}

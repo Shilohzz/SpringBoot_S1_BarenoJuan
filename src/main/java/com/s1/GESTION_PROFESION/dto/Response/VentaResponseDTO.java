@@ -1,6 +1,18 @@
 package com.s1.GESTION_PROFESION.dto.Response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record VentaResponseDTO(Long id, LocalDateTime fecha, Double total, List<DetalleResponseDTO> detalles) {}
+public record VentaResponseDTO(
+        @Schema(example = "1")
+        Long id,
+
+        @Schema(example = "2026-03-02T11:30:00")
+        LocalDateTime fecha,
+
+        @Schema(example = "171.98")
+        Double total,
+
+        List<DetalleResponseDTO> detalles
+) {}

@@ -11,7 +11,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "profesion")
-@Getter @Setter
+@Data
 @AllArgsConstructor @NoArgsConstructor
 public class Profesion {
     @Id
