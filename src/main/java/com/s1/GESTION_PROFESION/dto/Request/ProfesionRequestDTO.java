@@ -18,6 +18,6 @@ public record ProfesionRequestDTO(
         String nombre,
         @NotBlank(message = "El nombre no puede estar vacio.")
         @Size(min = 2, max = 50, message = "Error, el rango del nombre debe estar entre 2 y 50 caracteres")
-        @Schema(example = "Encargado del equipo de desarrollo", description = "Lidera y coordina el equipo de desarrollo")
+        @Schema(example = "Encargado del diseño y desarrollo de sistemas complejos.", description = "Lidera y coordina el equipo de desarrollo")
         String descripcion
 ) { }

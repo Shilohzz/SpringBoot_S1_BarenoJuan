@@ -4,4 +4,6 @@ import com.s1.GESTION_PROFESION.modelo.Venta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository public interface VentaRepository extends JpaRepository<Venta, Long> {}
+@Repository public interface VentaRepository extends JpaRepository<Venta, Long> {
+    // AQUÍ VAN LAS "CONSULTAS SQL" utilizando las herramientas de SpringBoot como: FindById, FindAll, etc.
+}

@@ -11,8 +11,5 @@ import java.util.List;
 
 @Repository
 public interface ProfesionRepository extends JpaRepository<Profesion,Long> {
-    Profesion findByNombreIgnoreCase(String nombre);
-    //List<Profesion> findByNombreIgnoreCaseAndDateBetween(String nombre, String fecha_inicio, String fecha_fin);
-    //boolean existsByName(String nombre);
-    //Long countByName(String nombre);
+    // AQUÍ VAN LAS "CONSULTAS SQL" utilizando las herramientas de SpringBoot como: FindById, FindAll, etc.String nombre)
 }
