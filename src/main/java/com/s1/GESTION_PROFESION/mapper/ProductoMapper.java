@@ -23,4 +23,11 @@ public class ProductoMapper {
                 producto.getPrecio()
         );
     }
+
+    public void actualizarEntidadDesdeDTO(Producto producto, ProductoRequestDTO dto) {
+        if (producto == null || dto == null) return;
+        producto.setNombre(dto.nombre());
+        producto.setPrecio(dto.precio());
+        producto.setStock(dto.stock());
+    }
 }

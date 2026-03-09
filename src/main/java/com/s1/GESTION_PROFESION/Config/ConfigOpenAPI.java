@@ -14,7 +14,6 @@ public class ConfigOpenAPI {
         return new OpenAPI()
                 .info(new Info()
                         .title("Gestión de Profesiones y Ventas")
-                        .version("1.0")
-                        .description("Sistema para la gestión de personas, productos y procesamiento de ventas con control de inventario."));
+                        .version("1.0").description("Sistema para la gestión de personas, productos y procesamiento de ventas con control de inventario."));
     }
 }

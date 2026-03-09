@@ -11,6 +11,5 @@ public interface ProfesionService {
     void eliminarProfesion(Long id);
     List<ProfesionResponseDTO> buscarTodos();
     List<ProfesionResponseDTO> buscarNombre(String nombre);
-    boolean buscarExisteNombre(String nombre);
-    Long contarNombreRepetidos(String nombre);
+
 }

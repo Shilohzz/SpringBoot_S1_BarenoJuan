@@ -1,5 +1,6 @@
 package com.s1.GESTION_PROFESION.service.impl;
 
+import com.s1.GESTION_PROFESION.Exception.BusinessRuleException;
 import com.s1.GESTION_PROFESION.dto.Request.PersonaRequestDTO;
 import com.s1.GESTION_PROFESION.dto.Response.PersonaResponseDTO;
 import com.s1.GESTION_PROFESION.dto.Response.ProfesionResponseDTO;
@@ -29,17 +30,12 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     @Transactional
     public PersonaResponseDTO guardarPersona(PersonaRequestDTO dto) {
-        // Validar que la profesión exista
         Profesion profesion = profesionRepository.findById(dto.profesionId())
-                .orElseThrow(() -> new RuntimeException("Error: La profesión con ID " + dto.profesionId() + " no existe."));
+                .orElseThrow(() -> new BusinessRuleException("La profesión con ID " + dto.profesionId() + " no existe"));
 
-        // Convertir DTO a Entidad
         Persona persona = personaMapper.DTOAEntidad(dto, profesion);
-
-        // Guardar
         Persona personaGuardada = personaRepository.save(persona);
 
-        // Retornar Respuesta mapeada
         ProfesionResponseDTO profResp = profesionMapper.entidadADTO(personaGuardada.getProfesion());
         return personaMapper.entidadADTO(personaGuardada, profResp);
     }
@@ -48,7 +44,7 @@ public class PersonaServiceImpl implements PersonaService {
     @Transactional(readOnly = true)
     public PersonaResponseDTO buscarPorId(Long id) {
         Persona persona = personaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Persona no encontrada"));
+                .orElseThrow(() -> new BusinessRuleException("Persona con ID " + id + " no encontrada"));
 
         ProfesionResponseDTO profResp = profesionMapper.entidadADTO(persona.getProfesion());
         return personaMapper.entidadADTO(persona, profResp);
@@ -66,10 +62,10 @@ public class PersonaServiceImpl implements PersonaService {
     @Transactional
     public PersonaResponseDTO actualizarPersona(PersonaRequestDTO dto, Long id) {
         Persona personaExistente = personaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Persona no encontrada"));
+                .orElseThrow(() -> new BusinessRuleException("Persona con ID " + id + " no encontrada"));
 
         Profesion profesion = profesionRepository.findById(dto.profesionId())
-                .orElseThrow(() -> new RuntimeException("Profesión no encontrada"));
+                .orElseThrow(() -> new BusinessRuleException("La profesión con ID " + dto.profesionId() + " no existe"));
 
         personaMapper.actualizarEntidadDesdeDTO(personaExistente, dto, profesion);
         Persona actualizada = personaRepository.save(personaExistente);
@@ -81,8 +77,9 @@ public class PersonaServiceImpl implements PersonaService {
     @Transactional
     public void eliminarPersona(Long id) {
         if (!personaRepository.existsById(id)) {
-            throw new RuntimeException("No se puede eliminar: Persona no existe");
+            throw new BusinessRuleException("No se puede eliminar: Persona con ID " + id + " no existe");
         }
         personaRepository.deleteById(id);
     }
 }
+

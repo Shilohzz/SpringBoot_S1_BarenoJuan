@@ -1,6 +1,7 @@
 package com.s1.GESTION_PROFESION.dto.Response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.math.BigDecimal;
 
 public record ProductoResponseDTO(
         @Schema(example = "1")
@@ -10,5 +11,5 @@ public record ProductoResponseDTO(
         String nombre,
 
         @Schema(example = "85.99")
-        Double precio
+        BigDecimal precio
 ) {}

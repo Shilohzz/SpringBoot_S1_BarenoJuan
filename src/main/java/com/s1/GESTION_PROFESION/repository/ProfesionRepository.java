@@ -7,9 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface ProfesionRepository extends JpaRepository<Profesion,Long> {
     // AQUÍ VAN LAS "CONSULTAS SQL" utilizando las herramientas de SpringBoot como: FindById, FindAll, etc.String nombre)
+
+    // Buscar por nombre
+    List<Profesion> findByNombreContainingIgnoreCase(String nombre);
+
+
 }

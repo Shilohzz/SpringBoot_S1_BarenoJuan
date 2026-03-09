@@ -1,5 +1,6 @@
 package com.s1.GESTION_PROFESION.service.impl;
 
+import com.s1.GESTION_PROFESION.Exception.BusinessRuleException;
 import com.s1.GESTION_PROFESION.dto.Request.VentaRequestDTO;
 import com.s1.GESTION_PROFESION.dto.Response.VentaResponseDTO;
 import com.s1.GESTION_PROFESION.mapper.VentaMapper;
@@ -12,6 +13,8 @@ import com.s1.GESTION_PROFESION.service.VentaService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class VentaServiceImpl implements VentaService {
+
     private final VentaRepository ventaRepository;
     private final ProductoRepository productoRepository;
     private final VentaMapper ventaMapper;
@@ -30,28 +34,34 @@ public class VentaServiceImpl implements VentaService {
         venta.setFecha(LocalDateTime.now());
 
         List<DetalleVenta> detalles = dto.detalles().stream().map(detalleDto -> {
-            // 1. Validar producto
             Producto producto = productoRepository.findById(detalleDto.productoId())
-                    .orElseThrow(() -> new RuntimeException("Producto ID " + detalleDto.productoId() + " no existe"));
+                    .orElseThrow(() -> new BusinessRuleException("Producto con ID " + detalleDto.productoId() + " no existe"));
 
-            // 2. Validar y descontar Stock
             if (producto.getStock() < detalleDto.cantidad()) {
-                throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());
+                throw new BusinessRuleException("Stock insuficiente para: " + producto.getNombre());
             }
+
             producto.setStock(producto.getStock() - detalleDto.cantidad());
 
-            // 3. Crear el detalle
             DetalleVenta detalle = new DetalleVenta();
             detalle.setProducto(producto);
             detalle.setCantidad(detalleDto.cantidad());
-            detalle.setPrecioUnitario(producto.getPrecio()); // Guardamos el precio del momento
-            detalle.setSubtotal(producto.getPrecio() * detalleDto.cantidad());
+            detalle.setPrecioUnitario(producto.getPrecio());
+
+            // Multiplico precio * cantidad usando BigDecimal para no perder precisión decimal
+            BigDecimal cantidad = BigDecimal.valueOf(detalleDto.cantidad());
+            detalle.setSubtotal(producto.getPrecio().multiply(cantidad));
             detalle.setVenta(venta);
             return detalle;
         }).collect(Collectors.toList());
 
         venta.setDetalles(detalles);
-        venta.setTotal(detalles.stream().mapToDouble(DetalleVenta::getSubtotal).sum());
+
+        // Sumo todos los subtotales con reduce para obtener el total de la venta
+        BigDecimal total = detalles.stream()
+                .map(DetalleVenta::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        venta.setTotal(total);
 
         return ventaMapper.entidadADTO(ventaRepository.save(venta));
     }
@@ -66,6 +76,6 @@ public class VentaServiceImpl implements VentaService {
     public VentaResponseDTO obtenerVenta(Long id) {
         return ventaRepository.findById(id)
                 .map(ventaMapper::entidadADTO)
-                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+                .orElseThrow(() -> new BusinessRuleException("Venta con ID " + id + " no encontrada"));
     }
 }

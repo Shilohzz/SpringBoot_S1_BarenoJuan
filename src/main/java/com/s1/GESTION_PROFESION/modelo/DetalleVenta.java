@@ -2,6 +2,7 @@ package com.s1.GESTION_PROFESION.modelo;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -13,10 +14,10 @@ public class DetalleVenta {
     private Long id;
 
     private Integer cantidad;
-    private Double subtotal;
 
-    // ESTE ES EL CAMPO QUE FALTA O ESTÁ MAL ESCRITO:
-    private Double precioUnitario;
+    private BigDecimal precioUnitario;
+
+    private BigDecimal subtotal;
 
     @ManyToOne
     @JoinColumn(name = "venta_id")

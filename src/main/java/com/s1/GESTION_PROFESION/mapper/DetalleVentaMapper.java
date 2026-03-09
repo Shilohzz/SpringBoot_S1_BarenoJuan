@@ -10,7 +10,7 @@ public class DetalleVentaMapper {
     public DetalleResponseDTO entidadADTO(DetalleVenta detalle) {
         return new DetalleResponseDTO(
                 detalle.getId(),
-                detalle.getProducto().getNombre(), // Nombre del producto relacionado
+                detalle.getProducto().getNombre(),
                 detalle.getCantidad(),
                 detalle.getSubtotal()
         );
