@@ -1,6 +1,5 @@
 package com.s1.GESTION_PROFESION.Config;
 
-import com.s1.GESTION_PROFESION.Config.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
@@ -14,14 +13,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-@Configuration// Le digo a Spring que esta clase es de configuración
+@Configuration // Le digo a Spring que esta clase es de configuración
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     // Inyecto mi filtro JWT personalizado
     // Este filtro es el que va a leer el token en cada petición
     private final JwtFilter jwtFilter;
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,22 +34,19 @@ public class SecurityConfig {
                 // Desactivo CSRF porque mi API es REST y trabaja con JWT (stateless).
                 // CSRF se usa más cuando hay sesiones y formularios.
                 .csrf(csrf -> csrf.disable())
-
                 // Le digo a Spring que no quiero sesiones.
                 // Cada request debe venir autenticado con su propio token.
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // Aquí defino qué endpoints son públicos y cuáles no.
                 .authorizeHttpRequests(auth -> auth
                         // Permito acceso libre al login.
                         // Si lo protegiera, el usuario necesitaría token para obtener token.
                         .requestMatchers("/auth/login").permitAll()
-                        //Esta me permite acceso OPTIONS, desde el frotend, evitando el CORS
+                        // Esta me permite acceso OPTIONS desde el frontend, evitando el CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Permito endpoints públicos de persona.
-                        // Esto lo hago para mostrar diferencia entre public y private.
-                        .requestMatchers("/api/persona/public/**").permitAll()
+                        // Permito los archivos estáticos del frontend, sin esto Spring los bloquea con 403
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/view/**").permitAll()
                         // Todo lo demás requiere autenticación.
                         // Si no mandan token válido, no entra.
                         .anyRequest().authenticated()
@@ -62,15 +57,8 @@ public class SecurityConfig {
                  *
                  * Porque quiero que primero se valide el token
                  * antes de que Spring intente autenticar usuario y contraseña.
-                 *
-                 * Este filtro será el encargado de:
-                 * - Leer el header Authorization
-                 * - Extraer el token
-                 * - Validarlo
-                 * - Cargar el usuario en el contexto de seguridad
                  */
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                // Finalmente construyo la configuración
                 .build();
     }
 
@@ -84,9 +72,7 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
         return source;

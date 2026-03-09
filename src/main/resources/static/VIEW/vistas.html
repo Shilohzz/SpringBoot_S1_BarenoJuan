@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test API Profesión</title>
+    <link rel="stylesheet" href="styless2.css">
+</head>
+
+<body>
+
+    <h2>Pruebas API Profesión</h2>
+
+    <hr>
+
+    <h3>GET por ID</h3>
+    <input type="number" id="getId" placeholder="ID">
+    <button onclick="testGetById()">Consultar</button>
+
+    <hr>
+
+    <h3>Listar todos</h3>
+    <button onclick="testBuscar()">Buscar</button>
+
+    <hr>
+
+    <h3>Crear Profesión (POST)</h3>
+    <input type="text" id="postNombre" placeholder="Nombre">
+    <input type="text" id="postDescripcion" placeholder="Descripción">
+    <button onclick="testPost()">Crear</button>
+
+    <hr>
+
+    <h3>Actualizar Profesión (PUT)</h3>
+    <input type="number" id="putId" placeholder="ID">
+    <input type="text" id="putNombre" placeholder="Nuevo Nombre">
+    <input type="text" id="putDescripcion" placeholder="Nueva Descripción">
+    <button onclick="testPut()">Actualizar</button>
+
+    <hr>
+
+    <h3>Eliminar Profesión (DELETE)</h3>
+    <input type="number" id="deleteId" placeholder="ID">
+    <button onclick="testDelete()">Eliminar</button>
+
+    <hr>
+
+    <pre id="resultado"></pre>
+
+    <script src="posibles_endpoints.js"></script>
+
+    <script>
+
+        function testGetById() {
+            const id = document.getElementById("getId").value;
+
+            getProfesionById(id)
+                .then(data => mostrar(data))
+                .catch(error => alert(error));
+        }
+
+        function testBuscar() {
+            listar()
+                .then(data => mostrar(data))
+                .catch(error => alert(error));
+        }
+
+        function testPost() {
+            const nombre = document.getElementById("postNombre").value;
+            const descripcion = document.getElementById("postDescripcion").value;
+
+            crearProfesion(nombre, descripcion)
+                .then(data => mostrar(data))
+                .catch(error => alert(error));
+        }
+
+        function testPut() {
+            const id = document.getElementById("putId").value;
+            const nombre = document.getElementById("putNombre").value;
+            const descripcion = document.getElementById("putDescripcion").value;
+
+            actualizarProfesionPersonalizada(id, nombre, descripcion)
+                .then(data => mostrar(data))
+                .catch(error => alert(error));
+        }
+
+        function testDelete() {
+            const id = document.getElementById("deleteId").value;
+
+            eliminarProfesion(id)
+                .then(() => mostrar("Eliminado correctamente"))
+                .catch(error => alert(error));
+        }
+
+        function mostrar(data) {
+            document.getElementById("resultado").textContent =
+                JSON.stringify(data, null, 2);
+        }
+    </script>
+
+</body>
+
+</html>
